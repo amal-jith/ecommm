@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+      Checkout - Geekzon
+{% endblock %}
+
+{% block content %}
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>GeekZon</p>
+						<h1>Checkout</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+
+	<!-- checkout -->
+	<div class="checkout-section mt-150 mb-150">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="checkout-accordion-wrap">
+						<div class="accordion" id="accordionExample">
+
+							<div class="card single-accordion">
+								<div class="card-header" id="headingOne">
+									<h5 class="mb-0">
+										<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+						          		Shipping Address
+						        		</button>
+						      		</h5>
+						    	</div>
+								<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+						      		<div class="card-body">
+						        		<div class="billing-address-form">
+
+										<form method="POST">
+											{% csrf_token %}
+											<div class="form-group">
+												<label for="id_billing_name">Full Name</label>
+												<input type="text" class="form-control" id="id_billing_name" name="billing_name" required>
+											</div>
+											<div class="form-group">
+												<label for="id_billing_email">Email</label>
+												<input type="email" class="form-control" id="id_billing_email" name="billing_email" required>
+											</div>
+											<div class="form-group">
+												<label for="id_billing_address">Address</label>
+												<input type="text" class="form-control" id="id_billing_address" name="billing_address" required>
+											</div>
+											<div class="form-group">
+												<label for="id_billing_phone">Phone</label>
+												<input type="text" class="form-control" id="id_billing_phone" name="billing_phone" required>
+											</div>
+										</form>
+
+										</div>
+						    		</div>
+						  		</div>
+							</div>
+
+
+
+						<!-- Add more shipping address fields as needed -->
+							<!-- Card details -->
+
+							<div class="card single-accordion">
+						    	<div class="card-header" id="headingThree">
+						      		<h5 class="mb-0">
+						        		<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+						          			Card Details
+						        		</button>
+						      		</h5>
+						    	</div>
+						    	<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+						      		<div class="card-body">
+						        		<div class="card-details">
+											<div class="form-group">
+												<label for="id_card_number">Card Number</label>
+													<input type="text" class="form-control" id="id_card_number" name="card_number" required>
+											</div>
+											<div class="form-group">
+												<label for="id_card_expiry">Card Expiry</label>
+													<input type="text" class="form-control" id="id_card_expiry" name="card_expiry" required>
+											</div>
+											<div class="form-group">
+												<label for="id_card_cvv">CVV</label>
+													<input type="text" class="form-control" id="id_card_cvv" name="card_cvv" required>
+											</div>
+						        		</div>
+						      		</div>
+						    	</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+
+<!-- Add table for order details and total price -->
+					<div class="col-lg-4">
+						<div class="order-details-wrap">
+							<table class="order-details">
+								<thead>
+									<tr>
+										<th>Your order Details</th>
+										<th>Price</th>
+									</tr>
+								</thead>
+								<tbody class="order-details-body">
+									<tr>
+										<td>Product</td>
+										<td>Total</td>
+									</tr>
+									{% for cart_item in cart_items %}
+    								<tr>
+     									<td>{{ cart_item.product.name }}</td>
+     								 	<td>Rs.{{ cart_item.get_total_price }}</td>
+   								 	</tr>
+  									{% endfor %}
+									<tbody class="checkout-details">
+  										<tr>
+    										<td>Subtotal</td>
+    										<td>Rs. {{ total_price }}</td>
+  										</tr>
+ 										<tr>
+    										<td>Shipping</td>
+    										<td>0</td>
+  										</tr>
+  										<tr>
+    										<td>Total</td>
+    										<td>Rs.{{ total_price|add:50 }}</td>
+  										</tr>
+									</tbody>
+							</table>
+							<button id="rzp-button1"  class="boxed-btn">Place Order</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end checkout -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "rzp_test_riKRBsoYOCIvWu", // Enter the Key ID generated from the Dashboard
+    "amount": "{{payment.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Geekzon Ecomm",
+    "description": "Placing Order",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature)
+    },
+
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+
+{% endblock %}

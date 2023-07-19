@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+        Store - Geekzon
+{% endblock %}
+
+{% block content %}
+
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>GeekZon</p>
+						<h1>Store</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+<!-- product-section -->
+<div class="product-section mt-150 mb-150">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="product-filters">
+          <ul>
+            <li class="active" data-filter="*" id="all-products">All</li>
+            {% for category in categories %}
+              <li data-filter=".{{ category.slug }}" class="category-filter">{{ category.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row product-lists">
+      {% for product in products %}
+        <div class="col-lg-4 col-md-6 text-center product-item {{ product.category.slug }}">
+          <div class="single-product-item">
+            <div class="product-image">
+              <a href="{% url 'store:product_detail' product.slug %}">
+                <img src="{{ product.image.url }}" alt="">
+              </a>
+            </div>
+            <h3>{{ product.name }}</h3>
+            <p class="product-price">Rs. {{ product.price }}</p>
+            <a href="{% url 'cart:add_to_cart' product.id %}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="row">
+				<div class="col-lg-12 text-center">
+					<div class="pagination-wrap">
+						<ul>
+							<li><a href="#">Prev</a></li>
+							<li><a href="#">1</a></li>
+							<li><a class="active" href="#">2</a></li>
+							<li><a href="#">3</a></li>
+							<li><a href="#">Next</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+  </div>
+</div>
+<!-- end product-section -->
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const allProductsFilter = document.getElementById('all-products');
+    const categoryFilters = document.getElementsByClassName('category-filter');
+    const productItems = document.getElementsByClassName('product-item');
+
+    // Function to filter products based on selected category
+    function filterProducts(category) {
+      for (let item of productItems) {
+        item.style.display = 'none';
+        if (category === '*' || item.classList.contains(category)) {
+          item.style.display = 'block';
+        }
+      }
+    }
+
+    // Event listener for category filter clicks
+    for (let filter of categoryFilters) {
+      filter.addEventListener('click', function () {
+        const selectedCategory = filter.getAttribute('data-filter');
+        filterProducts(selectedCategory);
+      });
+    }
+
+    // Event listener for "All" filter
+    allProductsFilter.addEventListener('click', function () {
+      filterProducts('*');
+    });
+  });
+</script>
+
+{% endblock %}

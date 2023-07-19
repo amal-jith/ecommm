@@ -1,0 +1,31 @@
+<nav class="main-menu">
+	<ul>
+		<li class="current-list-item"><a href="{% url 'homepage:home' %}">Home</a>
+
+		</li>
+		<li><a href="{% url 'homepage:about' %}">About</a></li>
+		<li><a href="{% url 'credentials:login_register' %}">LogIn/SignUp</a>
+			<ul class="sub-menu">
+				<li><a href="{% url 'credentials:login_register' %}">LogIn</a></li>
+				<li><a href="{% url 'credentials:login_register' %}">SignUp</a></li>
+				<li><a href="{% url 'homepage:home' %}">LogOut</a></li>
+			</ul>
+		</li>
+
+		<li><a href="{% url 'store:category_product_list' %}">Store</a>
+			<ul class="sub-menu">
+				<li><a href="{% url 'store:category_product_list' %}">Store</a></li>
+				<li><a href="{% url 'cart:view_cart' %}">Cart</a></li>
+				<li><a href="{% url 'cart:checkout' %}">Check Out</a></li>
+			</ul>
+		</li>
+		<li>
+			<div class="header-icons">
+				<a class="shopping-cart" href="{% url 'cart:view_cart' %}"><i class="fas fa-shopping-cart"></i></a>
+				<a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
+			</div>
+		</li>
+	</ul>
+</nav>
+<a class="mobile-show search-bar-icon" href="#"><i class="fas fa-search"></i></a>
+<div class="mobile-menu"></div>
